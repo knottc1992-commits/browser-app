@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Browser App</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #1e1e1e;
+}
+
+.topbar {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: #2b2b2b;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+}
+
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #3b82f6;
+  color: white;
+}
+
+iframe {
+  width: 100%;
+  height: calc(100vh - 60px);
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <input id="bar" placeholder="Search or URL">
+  <button onclick="go()">Go</button>
+</div>
+
+<iframe id="frame" src="https://duckduckgo.com"></iframe>
+
+<script>
+function go() {
+  let v = document.getElementById("bar").value.trim();
+  if (!v) return;
+
+  // search mode
+  if (!v.includes(".")) {
+    v = "https://duckduckgo.com/?q=" + encodeURIComponent(v);
+  }
+
+  // fix url
+  if (!v.startsWith("http")) {
+    v = "https://" + v;
+  }
+
+  // YouTube opens normally (important)
+  if (v.includes("youtube.com") || v.includes("youtu.be")) {
+    window.location.href = v;
+    return;
+  }
+
+  document.getElementById("frame").src = v;
+}
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>
